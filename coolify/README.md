@@ -37,3 +37,8 @@ O tráfego chega pelo domínio HTTPS configurado no painel do Coolify (proxy/SSL
   - `OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf`
 
 Observação: para app remota via protocolo HTTP (recomendado com Coolify), mantenha o endpoint em HTTPS e sem porta.
+
+### Observação de deploy no Coolify
+- O Coolify pode resolver paths relativos ao root do repositório. Se der erro de montagem, use o arquivo de raiz `docker-compose.coolify-root.yml` como compose file.
+- Compose recomendado no Coolify para este repositório: `docker-compose.coolify-root.yml`.
+- Depois de atualizar, force redeploy (sem cache) para recriar os containers.
