@@ -15,7 +15,9 @@ O tráfego chega pelo domínio HTTPS configurado no painel do Coolify (proxy/SSL
 
 ## Deploy (passo a passo)
 1. No Coolify, criar novo projeto/serviço e importar este repositório.
-2. No serviço de `Docker Compose`, apontar para `docker-compose.coolify.yml`.
+2. No serviço de `Docker Compose`, usar:
+   - `Base Directory`: `/coolify`
+   - `Docker Compose Location`: `/docker-compose.coolify.yml`
 3. Configurar variáveis:
    - `GRAFANA_ADMIN_PASSWORD` com senha forte.
 4. Habilitar domínio HTTPS em cada container que deseja publicar:
@@ -39,6 +41,7 @@ O tráfego chega pelo domínio HTTPS configurado no painel do Coolify (proxy/SSL
 Observação: para app remota via protocolo HTTP (recomendado com Coolify), mantenha o endpoint em HTTPS e sem porta.
 
 ### Observação de deploy no Coolify
-- O Coolify pode resolver paths relativos ao root do repositório. Se der erro de montagem, use o arquivo de raiz `docker-compose.coolify-root.yml` como compose file.
-- Compose recomendado no Coolify para este repositório: `docker-compose.coolify-root.yml`.
-- Depois de atualizar, force redeploy (sem cache) para recriar os containers.
+- A configuração recomendada é exatamente `/coolify` + `/docker-compose.coolify.yml`.
+- Se preferir base do repositório, use `Base Directory`: `/` e `Docker Compose Location`: `/docker-compose.coolify-root.yml`.
+- Depois de atualizar o Git, clique em `Reload Compose File`, salve e force `Redeploy` para recriar os containers.
+- No compose recarregado, os mounts precisam aparecer como arquivo direto, por exemplo `./otelcol-config/config.yaml:/etc/otelcol-contrib/config.yaml:ro`.

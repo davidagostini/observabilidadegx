@@ -13,8 +13,9 @@ Use este pacote para escolher entre:
 
 ### 1) Coolify
 1. Crie repositório Git com esta pasta (`outputs/observabilidade-pacote-completo`).
-2. No Coolify, adicione o app e selecione compose:
-   - `coolify/docker-compose.coolify.yml`
+2. No Coolify, adicione o app e configure:
+   - `Base Directory`: `/coolify`
+   - `Docker Compose Location`: `/docker-compose.coolify.yml`
 3. Crie variável:
    - `GRAFANA_ADMIN_PASSWORD` (valor seguro)
 4. Configure domínios no painel:
@@ -24,6 +25,8 @@ Use este pacote para escolher entre:
    - App interna à stack: `coolify/app-remote.env.local-app.example`
    - App remota: `coolify/app-remote.env.remote-app.example`
 6. Deploy.
+
+Depois de atualizar o repositório, use `Reload Compose File`, salve e rode `Redeploy`.
 
 ### 2) Docker local
 1. Abra pasta `local/`.

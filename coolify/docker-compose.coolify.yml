@@ -6,7 +6,6 @@ services:
     volumes:
       - ./otelcol-config/config.yaml:/etc/otelcol-contrib/config.yaml:ro
     expose:
-      - "4317"
       - "4318"
     depends_on:
       - tempo
