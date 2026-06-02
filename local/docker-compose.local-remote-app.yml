@@ -5,7 +5,7 @@ services:
     image: otel/opentelemetry-collector-contrib:0.102.1
     command: ["--config=/etc/otelcol-contrib/config.yaml"]
     volumes:
-      - ./otel-collector.yaml:/etc/otelcol-contrib/config.yaml:ro
+      - ./otelcol-config:/etc/otelcol-contrib:ro
     ports:
       - "4317:4317"
       - "4318:4318"
@@ -14,9 +14,9 @@ services:
 
   tempo:
     image: grafana/tempo:2.5.0
-    command: ["-config.file=/etc/tempo.yaml"]
+    command: ["-config.file=/etc/tempo/tempo.yaml"]
     volumes:
-      - ./tempo.yaml:/etc/tempo.yaml:ro
+      - ./tempo-config:/etc/tempo:ro
     ports:
       - "3200:3200"
 
@@ -25,7 +25,7 @@ services:
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
     volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./prometheus-config:/etc/prometheus:ro
     ports:
       - "9090:9090"
 
