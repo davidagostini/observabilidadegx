@@ -21,11 +21,13 @@ O tráfego chega pelo domínio HTTPS configurado no painel do Coolify (proxy/SSL
 3. Configurar variáveis:
    - `GRAFANA_ADMIN_PASSWORD` com senha forte.
 4. Habilitar domínio HTTPS em cada container que deseja publicar:
-   - Grafana: `grafana.seudominio.com`
-   - Prometheus: `prometheus.seudominio.com` (opcional)
-   - Tempo: `tempo.seudominio.com` (opcional)
-   - OTEL Collector (somente se app for externa): `otel.seudominio.com`
+   - Grafana: `https://grafana.seudominio.com:3000`
+   - Prometheus: `https://prometheus.seudominio.com:9090` (opcional)
+   - Tempo: `https://tempo.seudominio.com:3200` (opcional)
+   - OTEL Collector (somente se app for externa): `https://otel.seudominio.com:4318`
 5. Subir.
+
+Observacao: essa porta no campo de dominio e a porta interna do container para o proxy do Coolify. A URL publica continua sem porta, por exemplo `https://grafana.seudominio.com`.
 
 ## Opção A — app local (na mesma stack/rede)
 - Use `app-remote.env.local-app.example`

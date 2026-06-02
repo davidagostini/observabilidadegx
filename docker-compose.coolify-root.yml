@@ -74,6 +74,12 @@ services:
         exec /tempo -config.file=/tmp/tempo.yaml
     expose:
       - "3200"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:3200/ready"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
 
   prometheus:
     image: prom/prometheus:v2.53.0
@@ -94,6 +100,12 @@ services:
         exec /bin/prometheus --config.file=/tmp/prometheus.yml
     expose:
       - "9090"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:9090/-/ready"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
 
   grafana:
     image: grafana/grafana:13.0.1
@@ -129,6 +141,12 @@ services:
     depends_on:
       - tempo
       - prometheus
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:3000/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
 volumes:
   grafana_data:

@@ -19,8 +19,10 @@ Use este pacote para escolher entre:
 3. Crie variável:
    - `GRAFANA_ADMIN_PASSWORD` (valor seguro)
 4. Configure domínios no painel:
-   - Grafana: `grafana.seudominio.com`
-   - OTEL (opcional, só se app remota): `otel.seudominio.com`
+   - Grafana: `https://grafana.seudominio.com:3000`
+   - Prometheus: `https://prometheus.seudominio.com:9090`
+   - Tempo: `https://tempo.seudominio.com:3200`
+   - OTEL (opcional, só se app remota): `https://otel.seudominio.com:4318`
 5. Escolha `.env` de app no seu ambiente:
    - App interna à stack: `coolify/app-remote.env.local-app.example`
    - App remota: `coolify/app-remote.env.remote-app.example`
@@ -28,6 +30,7 @@ Use este pacote para escolher entre:
 
 Depois de atualizar o repositório, use `Reload Compose File`, salve e rode `Redeploy`.
 No Coolify, os configs de Prometheus, Tempo, OTEL Collector e Grafana ficam embutidos no compose para evitar problemas de bind mount no servidor.
+A porta no campo de dominio e a porta interna do container; a URL publica continua sem porta.
 
 ### 2) Docker local
 1. Abra pasta `local/`.
