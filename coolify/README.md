@@ -44,5 +44,5 @@ Observação: para app remota via protocolo HTTP (recomendado com Coolify), mant
 - A configuração recomendada é exatamente `/coolify` + `/docker-compose.coolify.yml`.
 - Se preferir base do repositório, use `Base Directory`: `/` e `Docker Compose Location`: `/docker-compose.coolify-root.yml`.
 - Depois de atualizar o Git, clique em `Reload Compose File`, salve e force `Redeploy` para recriar os containers.
-- No compose recarregado, os arquivos de configuração precisam aparecer na seção `configs`, não em `volumes`.
-- Isso evita que o Coolify tente criar/montar arquivos dentro de `/data/coolify/applications/...`.
+- No compose recarregado, os arquivos de configuração ficam embutidos no proprio `docker-compose.coolify.yml`.
+- O compose do Coolify nao depende de bind mount nem de `configs` para Prometheus, Tempo, OTEL Collector ou datasource do Grafana.

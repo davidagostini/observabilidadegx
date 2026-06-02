@@ -2,10 +2,46 @@ services:
   otel-collector:
     image: otel/opentelemetry-collector-contrib:0.102.1
     command:
-      - "--config=/etc/otelcol-contrib/config.yaml"
-    configs:
-      - source: otel_collector_config
-        target: /etc/otelcol-contrib/config.yaml
+      - "--config=env:OTEL_CONFIG"
+    environment:
+      OTEL_CONFIG: |
+        receivers:
+          otlp:
+            protocols:
+              grpc:
+              http:
+
+        processors:
+          batch:
+
+        exporters:
+          otlp/tempo:
+            endpoint: tempo:4317
+            tls:
+              insecure: true
+
+          prometheus:
+            endpoint: "0.0.0.0:9464"
+
+          logging:
+            verbosity: detailed
+
+        service:
+          pipelines:
+            traces:
+              receivers: [otlp]
+              processors: [batch]
+              exporters: [otlp/tempo, logging]
+
+            metrics:
+              receivers: [otlp]
+              processors: [batch]
+              exporters: [prometheus, logging]
+
+            logs:
+              receivers: [otlp]
+              processors: [batch]
+              exporters: [logging]
     expose:
       - "4318"
     depends_on:
@@ -13,34 +49,81 @@ services:
 
   tempo:
     image: grafana/tempo:2.5.0
+    entrypoint:
+      - /bin/sh
+      - -c
     command:
-      - "-config.file=/etc/tempo/tempo.yaml"
-    configs:
-      - source: tempo_config
-        target: /etc/tempo/tempo.yaml
+      - |
+        cat >/tmp/tempo.yaml <<'EOF'
+        server:
+          http_listen_port: 3200
+
+        distributor:
+          receivers:
+            otlp:
+              protocols:
+                grpc:
+                http:
+
+        storage:
+          trace:
+            backend: local
+            local:
+              path: /tmp/tempo/traces
+        EOF
+        exec /tempo -config.file=/tmp/tempo.yaml
     expose:
       - "3200"
 
   prometheus:
     image: prom/prometheus:v2.53.0
+    entrypoint:
+      - /bin/sh
+      - -c
     command:
-      - "--config.file=/etc/prometheus/prometheus.yml"
-    configs:
-      - source: prometheus_config
-        target: /etc/prometheus/prometheus.yml
+      - |
+        cat >/tmp/prometheus.yml <<'EOF'
+        global:
+          scrape_interval: 15s
+
+        scrape_configs:
+          - job_name: otel-collector
+            static_configs:
+              - targets: ["otel-collector:9464"]
+        EOF
+        exec /bin/prometheus --config.file=/tmp/prometheus.yml
     expose:
       - "9090"
 
   grafana:
     image: grafana/grafana:13.0.1
+    entrypoint:
+      - /bin/sh
+      - -c
+    command:
+      - |
+        mkdir -p /etc/grafana/provisioning/datasources
+        cat >/etc/grafana/provisioning/datasources/datasources.yml <<'EOF'
+        apiVersion: 1
+
+        datasources:
+          - name: Prometheus
+            type: prometheus
+            access: proxy
+            url: http://prometheus:9090
+            isDefault: true
+
+          - name: Tempo
+            type: tempo
+            access: proxy
+            url: http://tempo:3200
+        EOF
+        exec /run.sh
     environment:
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:-admin}
     volumes:
       - grafana_data:/var/lib/grafana
-    configs:
-      - source: grafana_datasources
-        target: /etc/grafana/provisioning/datasources/datasources.yml
     expose:
       - "3000"
     depends_on:
@@ -49,13 +132,3 @@ services:
 
 volumes:
   grafana_data:
-
-configs:
-  otel_collector_config:
-    file: ./otelcol-config/config.yaml
-  tempo_config:
-    file: ./tempo-config/tempo.yaml
-  prometheus_config:
-    file: ./prometheus-config/prometheus.yml
-  grafana_datasources:
-    file: ./grafana-datasources/datasources.yml

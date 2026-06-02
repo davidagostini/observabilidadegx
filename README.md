@@ -27,6 +27,7 @@ Use este pacote para escolher entre:
 6. Deploy.
 
 Depois de atualizar o repositório, use `Reload Compose File`, salve e rode `Redeploy`.
+No Coolify, os configs de Prometheus, Tempo, OTEL Collector e Grafana ficam embutidos no compose para evitar problemas de bind mount no servidor.
 
 ### 2) Docker local
 1. Abra pasta `local/`.
