@@ -4,7 +4,7 @@ services:
     command:
       - "--config=/etc/otelcol-contrib/config.yaml"
     volumes:
-      - ./coolify/otelcol-config:/etc/otelcol-contrib:ro
+      - ./coolify/otelcol-config/config.yaml:/etc/otelcol-contrib/config.yaml:ro
     expose:
       - "4317"
       - "4318"
@@ -16,7 +16,7 @@ services:
     command:
       - "-config.file=/etc/tempo/tempo.yaml"
     volumes:
-      - ./coolify/tempo-config:/etc/tempo:ro
+      - ./coolify/tempo-config/tempo.yaml:/etc/tempo/tempo.yaml:ro
     expose:
       - "3200"
 
@@ -25,7 +25,7 @@ services:
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
     volumes:
-      - ./coolify/prometheus-config:/etc/prometheus:ro
+      - ./coolify/prometheus-config/prometheus.yml:/etc/prometheus/prometheus.yml:ro
     expose:
       - "9090"
 
