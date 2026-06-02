@@ -3,8 +3,9 @@ services:
     image: otel/opentelemetry-collector-contrib:0.102.1
     command:
       - "--config=/etc/otelcol-contrib/config.yaml"
-    volumes:
-      - ./coolify/otelcol-config/config.yaml:/etc/otelcol-contrib/config.yaml:ro
+    configs:
+      - source: otel_collector_config
+        target: /etc/otelcol-contrib/config.yaml
     expose:
       - "4318"
     depends_on:
@@ -14,8 +15,9 @@ services:
     image: grafana/tempo:2.5.0
     command:
       - "-config.file=/etc/tempo/tempo.yaml"
-    volumes:
-      - ./coolify/tempo-config/tempo.yaml:/etc/tempo/tempo.yaml:ro
+    configs:
+      - source: tempo_config
+        target: /etc/tempo/tempo.yaml
     expose:
       - "3200"
 
@@ -23,8 +25,9 @@ services:
     image: prom/prometheus:v2.53.0
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
-    volumes:
-      - ./coolify/prometheus-config/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    configs:
+      - source: prometheus_config
+        target: /etc/prometheus/prometheus.yml
     expose:
       - "9090"
 
@@ -35,7 +38,9 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:-admin}
     volumes:
       - grafana_data:/var/lib/grafana
-      - ./coolify/grafana-datasources:/etc/grafana/provisioning/datasources:ro
+    configs:
+      - source: grafana_datasources
+        target: /etc/grafana/provisioning/datasources/datasources.yml
     expose:
       - "3000"
     depends_on:
@@ -44,3 +49,13 @@ services:
 
 volumes:
   grafana_data:
+
+configs:
+  otel_collector_config:
+    file: ./coolify/otelcol-config/config.yaml
+  tempo_config:
+    file: ./coolify/tempo-config/tempo.yaml
+  prometheus_config:
+    file: ./coolify/prometheus-config/prometheus.yml
+  grafana_datasources:
+    file: ./coolify/grafana-datasources/datasources.yml
