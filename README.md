@@ -35,13 +35,30 @@ A porta no campo de dominio e a porta interna do container; a URL publica contin
 ### 2) Docker local
 1. Abra pasta `local/`.
 2. Escolha:
-   - `docker-compose.local-local-app.yml` (app local/rede do Docker)
-   - `docker-compose.local-remote-app.yml` (app fora do Docker local)
+   - `docker-compose.local-local-app.yml`: use para desenvolvimento local simples, app na mesma máquina ou app em container na mesma rede Docker.
+   - `docker-compose.local-remote-app.yml`: use quando a stack local vai receber dados de app fora da stack, em outro container/projeto ou em outra máquina.
 3. Levante a stack:
    - `docker compose -f <arquivo> up -d`
 4. Use as variáveis de exemplo equivalentes:
    - `local/app-remote.env.local-app.example`
    - `local/app-remote.env.remote-app.example`
+
+Atalho mais comum para subir local:
+
+```powershell
+cd local
+docker compose -f docker-compose.local-local-app.yml up -d
+```
+
+Depois acesse:
+
+- Grafana: `http://localhost:3000`
+- Prometheus: `http://localhost:9090`
+- Tempo: `http://localhost:3200`
+- OTEL HTTP/protobuf: `http://localhost:4318`
+- OTEL gRPC: `localhost:4317`
+
+Veja o passo a passo completo em `local/README.md`.
 
 ## Segurança
 - Não commitar arquivos `.env` reais.
